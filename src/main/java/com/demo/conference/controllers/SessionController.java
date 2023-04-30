@@ -1,8 +1,7 @@
 package com.demo.conference.controllers;
 
 import com.demo.conference.models.Session;
-import com.demo.conference.models.Speaker;
-import com.demo.conference.repositories.SessionRepository;
+import com.demo.conference.services.SessionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,39 +15,36 @@ import java.util.List;
 public class SessionController {
 
     @Autowired
-    private SessionRepository sessionRepository;
+    private SessionService sessionService;
 
     @GetMapping
     public ResponseEntity<List<Session>> getAll()
     {
-        return new ResponseEntity<>(sessionRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(sessionService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Session> get(@PathVariable Long id)
     {
-        return new ResponseEntity<>(sessionRepository.getReferenceById(id), HttpStatus.OK);
+        return new ResponseEntity<>(sessionService.getSession(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Session> add(@RequestBody Session session)
     {
-        return new ResponseEntity<>(sessionRepository.saveAndFlush(session), HttpStatus.OK);
+        return new ResponseEntity<>(sessionService.addSession(session), HttpStatus.OK);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Session> update(@PathVariable Long id, @RequestBody Session session)
     {
-        Session existingSession = sessionRepository.getOne(id);
-        BeanUtils.copyProperties(session, existingSession, "sessionId");
-        return new ResponseEntity<>(sessionRepository.saveAndFlush(existingSession), HttpStatus.OK);
+        return new ResponseEntity<>(sessionService.updateSession(id, session), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Session> delete(@PathVariable Long id)
+    public ResponseEntity<String> delete(@PathVariable Long id)
     {
-        Session session = sessionRepository.getReferenceById(id);
-        sessionRepository.deleteById(id);
-        return new ResponseEntity<>(session, HttpStatus.OK);
+        sessionService.deleteSession(id);
+        return new ResponseEntity<>("Session has been deleted successfully", HttpStatus.OK);
     }
 }

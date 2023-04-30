@@ -1,8 +1,7 @@
 package com.demo.conference.controllers;
 
-import com.demo.conference.models.Session;
 import com.demo.conference.models.Speaker;
-import com.demo.conference.repositories.SpeakerRepository;
+import com.demo.conference.services.SpeakerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,32 +15,30 @@ import java.util.List;
 public class SpeakerController {
 
     @Autowired
-    private SpeakerRepository speakerRepository;
+    private SpeakerService speakerService;
 
     @GetMapping
     public ResponseEntity<List<Speaker>> getAll()
     {
-        return new ResponseEntity<>(speakerRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(speakerService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Speaker> get(@PathVariable Long id)
     {
-        return new ResponseEntity<>(speakerRepository.getReferenceById(id), HttpStatus.OK);
+        return new ResponseEntity<>(speakerService.getSpeaker(id), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Speaker> add(@RequestBody Speaker speaker)
     {
-        return new ResponseEntity<>(speakerRepository.saveAndFlush(speaker), HttpStatus.OK);
+        return new ResponseEntity<>(speakerService.addSpeaker(speaker), HttpStatus.OK);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Speaker> update(@PathVariable Long id, @RequestBody Speaker speaker)
     {
-        Speaker existingSpeaker = speakerRepository.getReferenceById(id);
-        BeanUtils.copyProperties(speaker, existingSpeaker, "speakerId");
-        return new ResponseEntity<>(speakerRepository.saveAndFlush(existingSpeaker), HttpStatus.OK);
+        return new ResponseEntity<>(speakerService.updateSpeaker(id, speaker), HttpStatus.OK);
     }
 
 
@@ -49,8 +46,7 @@ public class SpeakerController {
     @DeleteMapping("{id}")
     public ResponseEntity<Speaker> delete(@PathVariable Long id)
     {
-        Speaker speaker = speakerRepository.getReferenceById(id);
-        speakerRepository.deleteById(id);
-        return new ResponseEntity<>(speaker, HttpStatus.OK);
+
+        return new ResponseEntity<>(speakerService.deleteSpeaker(id), HttpStatus.OK);
     }
 }

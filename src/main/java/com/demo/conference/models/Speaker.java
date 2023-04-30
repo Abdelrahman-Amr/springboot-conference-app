@@ -35,9 +35,9 @@ public class Speaker {
     @Column(name = "speaker_bio")
     private String speakerBio;
 
-    @Lob
+//    @Lob
 //    @Type(type="org.hibernate.type.BinaryType")
-    @Column(name = "speaker_photo",  columnDefinition="BLOB")
+    @Column(name = "speaker_photo",  columnDefinition = "bytea")
     private byte[] speakerPhoto;
 
     @ManyToMany(mappedBy = "speakers")
